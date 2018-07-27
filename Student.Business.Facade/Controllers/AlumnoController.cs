@@ -1,5 +1,6 @@
 ﻿using Student.Business.Logi.BusinessLogic;
 using Student.Common.Logic.Log4Net;
+using Student.Common.Logic.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,8 +46,11 @@ namespace Student.Business.Facade.Controllers
         }
 
         // POST: api/Alumno
-        public void Post([FromBody]string value)
+        public IHttpActionResult Post(Alumno alumno)
         {
+            Log.Debug("" + System.Reflection.MethodBase.GetCurrentMethod().Name);
+
+            return Ok(studentBl.AddAlumno(alumno));
         }
 
         // PUT: api/Alumno/5

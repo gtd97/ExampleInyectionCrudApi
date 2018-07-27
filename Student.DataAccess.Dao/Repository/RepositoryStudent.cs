@@ -8,45 +8,43 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Student.DataAccess.Dao
+namespace Student.DataAccess.Dao.Repository
 {
-    public class StudentDao : IRepository
+    public class RepositoryStudent : IRepository
     {
         private readonly ILogger log;
         private readonly string connectionString;
 
-        public StudentDao() { }
+        #region Constructores
+        public RepositoryStudent() { }
 
-        public StudentDao(ILogger log)
+        public RepositoryStudent(ILogger log)
         {
             this.log = log;
             connectionString = "Data Source=P-0314;Initial Catalog=VuelingApiD;Integrated Security=true;";
         }
+        #endregion
 
-
-
-        // Al utilizar SQL connection -> te casas con un tipo de sql
-        // DBConnection y DBCommand son las bases donde heredan todos 
 
         public int AddAlumno(Alumno alumno)
         {
             try
             {
-                var sql = "INSERT INTO dbo.Alumnos (UUID, Nombre, Apellido, Dni, DateRegistry, DateBorn, Edad) VALUES (@UUID, @Nombre, @Apellido, @Dni, @DateRegistry, @DateBorn, @Edad)";
+                var sql = "INSERT INTO dbo.Alumnos (Guid, Nombre, Apellidos, Dni, Registro, Nacimiento, Edad) VALUES (@Guid, @Nombre, @Apellidos, @Dni, @Registro, @Nacimiento, @Edad)";
 
-                using(SqlConnection _conn = new SqlConnection(connectionString))
+                using (SqlConnection _conn = new SqlConnection(connectionString))
                 {
                     using (SqlCommand _cmd = new SqlCommand(sql, _conn))
                     {
                         // Importante abrir la conexion antes de lanzar ningun comando
                         _conn.Open();
 
-                        _cmd.Parameters.AddWithValue("@UUID", alumno.Guid.ToString());
+                        _cmd.Parameters.AddWithValue("@Guid", alumno.Guid.ToString());
                         _cmd.Parameters.AddWithValue("@Nombre", alumno.Nombre.ToString());
-                        _cmd.Parameters.AddWithValue("@Apellido", alumno.Apellidos.ToString());
+                        _cmd.Parameters.AddWithValue("@Apellidos", alumno.Apellidos.ToString());
                         _cmd.Parameters.AddWithValue("@Dni", alumno.Dni.ToString());
-                        _cmd.Parameters.AddWithValue("@DateRegistry", alumno.Registro.ToString());
-                        _cmd.Parameters.AddWithValue("@DateBorn", alumno.Nacimiento.ToString());
+                        _cmd.Parameters.AddWithValue("@Registro", alumno.Registro.ToString());
+                        _cmd.Parameters.AddWithValue("@Nacimiento", alumno.Nacimiento.ToString());
                         _cmd.Parameters.AddWithValue("@Edad", alumno.Edad.ToString());
 
                         _cmd.ExecuteNonQuery();
@@ -73,6 +71,5 @@ namespace Student.DataAccess.Dao
                 throw ex;
             }
         }
-
     }
 }

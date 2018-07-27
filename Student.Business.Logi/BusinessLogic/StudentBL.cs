@@ -24,7 +24,7 @@ namespace Student.Business.Logi.BusinessLogic
         {
             try
             {
-                // Obtener el nombre del metodo -> System.Reflection.MethodBase.GetCurrentMethod().Name
+                // Obtener el nombre del metodo --> System.Reflection.MethodBase.GetCurrentMethod().Name
                 Log.Debug("" + System.Reflection.MethodBase.GetCurrentMethod().Name);
                 return repository.AddAlumno(alumno);
             }
