@@ -10,5 +10,6 @@ namespace Student.DataAccess.Dao.Contracts
     public interface IRepository
     {
         int AddAlumno(Alumno alumno);
+        List<Alumno> GetAll();
     }
 }

@@ -47,7 +47,6 @@
     <Compile Include="Modules\DataAccessDaoModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\RepositoryStudent.cs" />
-    <Compile Include="StudentDao.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Student.Common.Logic\Student.Common.Logic.csproj">

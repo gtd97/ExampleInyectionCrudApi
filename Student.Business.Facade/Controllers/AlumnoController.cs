@@ -28,7 +28,7 @@ namespace Student.Business.Facade.Controllers
         public IHttpActionResult GetAll()
         {
             Log.Debug("" + System.Reflection.MethodBase.GetCurrentMethod().Name);
-            return Ok();
+            return Ok(studentBl.GetAll());
         }
 
 

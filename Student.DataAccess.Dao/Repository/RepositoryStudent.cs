@@ -25,7 +25,7 @@ namespace Student.DataAccess.Dao.Repository
         }
         #endregion
 
-
+        #region Add
         public int AddAlumno(Alumno alumno)
         {
             try
@@ -71,5 +71,49 @@ namespace Student.DataAccess.Dao.Repository
                 throw ex;
             }
         }
+        #endregion
+
+        #region GetAll
+        public List<Alumno> GetAll()
+        {
+            List<Alumno> listaAlumnos = new List<Alumno>();
+
+            try
+            {
+                var sql = "SELECT * FROM dbo.Alumnos";
+
+                using (SqlConnection _conn = new SqlConnection(connectionString))
+                {
+                    // Importante abrir la conexion antes de lanzar ningun comando
+                    _conn.Open();
+
+                    using (SqlCommand _cmd = new SqlCommand(sql, _conn))
+                    {
+                        using (SqlDataReader reader = _cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Alumno alumno = new Alumno(Guid.Parse(reader["guid"].ToString()), Convert.ToInt32(reader["id"]), reader["nombre"].ToString(), reader["apellidos"].ToString(), Convert.ToInt32(reader["edad"]), DateTime.Parse(reader["nacimiento"].ToString()), DateTime.Parse(reader["registro"].ToString()));
+                                listaAlumnos.Add(alumno);
+                            }
+                        }
+                    }
+                }
+
+                return listaAlumnos;
+            }
+            catch (SqlException ex)
+            {
+                log.Error(ex);
+                throw ex;
+            }
+            catch (InvalidOperationException ex)
+            {
+                log.Error(ex);
+                throw ex;
+            }
+        }
+        #endregion
+
     }
 }

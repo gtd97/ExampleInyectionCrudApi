@@ -34,5 +34,20 @@ namespace Student.Business.Logi.BusinessLogic
                 throw ex;
             }
         }
+
+        public List<Alumno> GetAll()
+        {
+            try
+            {
+                // Obtener el nombre del metodo --> System.Reflection.MethodBase.GetCurrentMethod().Name
+                Log.Debug("" + System.Reflection.MethodBase.GetCurrentMethod().Name);
+                return repository.GetAll();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw ex;
+            }
+        }
     }
 }

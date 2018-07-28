@@ -10,5 +10,6 @@ namespace Student.Business.Logi.BusinessLogic
     public interface IBusiness
     {
         int AddAlumno(Alumno alumno);
+        List<Alumno> GetAll();
     }
 }
