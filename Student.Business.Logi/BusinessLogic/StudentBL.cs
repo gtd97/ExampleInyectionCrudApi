@@ -49,5 +49,50 @@ namespace Student.Business.Logi.BusinessLogic
                 throw ex;
             }
         }
+
+        public Alumno GetById(Guid guid)
+        {
+            try
+            {
+                // Obtener el nombre del metodo --> System.Reflection.MethodBase.GetCurrentMethod().Name
+                Log.Debug("" + System.Reflection.MethodBase.GetCurrentMethod().Name);
+                return repository.GetById(guid);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw ex;
+            }
+        }
+
+        public Alumno Update(Guid guid, Alumno alumno)
+        {
+            try
+            {
+                // Obtener el nombre del metodo --> System.Reflection.MethodBase.GetCurrentMethod().Name
+                Log.Debug("" + System.Reflection.MethodBase.GetCurrentMethod().Name);
+                return repository.Update(guid, alumno);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw ex;
+            }
+        }
+
+        public int Remove(Guid guid)
+        {
+            try
+            {
+                // Obtener el nombre del metodo --> System.Reflection.MethodBase.GetCurrentMethod().Name
+                Log.Debug("" + System.Reflection.MethodBase.GetCurrentMethod().Name);
+                return repository.Remove(guid);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw ex;
+            }
+        }
     }
 }

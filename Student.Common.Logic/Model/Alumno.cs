@@ -21,12 +21,13 @@ namespace Student.Common.Logic.Model
 
         #region Constructores
         public Alumno() { }
-        public Alumno(Guid guid, int id, string nombre, string apellidos, int edad, DateTime nacimiento, DateTime registro)
+        public Alumno(Guid guid, int id, string nombre, string apellidos, string dni, int edad, DateTime nacimiento, DateTime registro)
         {
             this.Guid = guid;
             this.Id = id;
             this.Nombre = nombre;
             this.Apellidos = apellidos;
+            this.Dni = dni;
             this.Edad = edad;
             this.Nacimiento = nacimiento;
             this.Registro = registro;

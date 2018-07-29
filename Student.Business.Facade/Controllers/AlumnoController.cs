@@ -32,35 +32,40 @@ namespace Student.Business.Facade.Controllers
         }
 
 
-
-        // GET: api/Alumno
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
         // GET: api/Alumno/5
-        public string Get(int id)
+        [HttpGet()]
+        [Route("api/Alumno/GetById/{guid}")]
+        public IHttpActionResult GetById(Guid guid)
         {
-            return "value";
+            Log.Debug("" + System.Reflection.MethodBase.GetCurrentMethod().Name);
+            return Ok(studentBl.GetById(guid));
         }
 
         // POST: api/Alumno
+        [HttpPost()]
+        [Route("api/Alumno/Post")]
         public IHttpActionResult Post(Alumno alumno)
         {
             Log.Debug("" + System.Reflection.MethodBase.GetCurrentMethod().Name);
-
             return Ok(studentBl.AddAlumno(alumno));
         }
 
         // PUT: api/Alumno/5
-        public void Put(int id, [FromBody]string value)
+        [HttpPut()]
+        [Route("api/Alumno/Update/{guid}")]
+        public IHttpActionResult Put(Guid guid, Alumno alumno)
         {
+            Log.Debug("" + System.Reflection.MethodBase.GetCurrentMethod().Name);
+            return Ok(studentBl.Update(guid, alumno));
         }
 
         // DELETE: api/Alumno/5
-        public void Delete(int id)
+        [HttpDelete()]
+        [Route("api/Alumno/Remove/{guid}")]
+        public IHttpActionResult Remove(Guid guid)
         {
+            Log.Debug("" + System.Reflection.MethodBase.GetCurrentMethod().Name);
+            return Ok(studentBl.Remove(guid));
         }
     }
 }
