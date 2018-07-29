@@ -131,17 +131,13 @@ namespace Student.DataAccess.Dao.Repository
                     {
                         // Importante abrir la conexion antes de lanzar ningun comando
                         _conn.Open();
-
-                        //_cmd.ExecuteNonQuery();
                         _cmd.Parameters.AddWithValue("@GUID", guid);
-                        
 
                         using (SqlDataReader reader = _cmd.ExecuteReader())
                         {
                             while (reader.Read())
                             {
                                 alumno = new Alumno(Guid.Parse(reader["guid"].ToString()), Convert.ToInt32(reader["id"]), reader["nombre"].ToString(), reader["apellidos"].ToString(), reader["dni"].ToString(), Convert.ToInt32(reader["edad"]), DateTime.Parse(reader["nacimiento"].ToString()), DateTime.Parse(reader["registro"].ToString()));
-                                
                             }
                         }
                     }
@@ -162,7 +158,7 @@ namespace Student.DataAccess.Dao.Repository
         }
         #endregion
 
-        #region GetById
+        #region Remove
         public int Remove(Guid guid)
         {
             try
@@ -203,7 +199,7 @@ namespace Student.DataAccess.Dao.Repository
         {
             try
             {
-                var sql = "UPDATE dbo.Alumnos SET Guid=@Guid, Nombre=@Nombre, Apellidos=@Apellidos, Dni=@Dni, Registro=@Registro, Nacimiento=@Nacimiento, Edad=@Edad WHERE Guid='@Guid'";
+                var sql = "UPDATE dbo.Alumnos SET Guid=@Guid, Nombre=@Nombre, Apellidos=@Apellidos, Dni=@Dni, Registro=@Registro, Nacimiento=@Nacimiento, Edad=@Edad WHERE Guid=@Guid";
 
                 using (SqlConnection _conn = new SqlConnection(connectionString))
                 {
@@ -211,8 +207,8 @@ namespace Student.DataAccess.Dao.Repository
                     {
                         // Importante abrir la conexion antes de lanzar ningun comando
                         _conn.Open();
-                        
-                        _cmd.Parameters.AddWithValue("@Guid", guid.ToString());
+
+                        _cmd.Parameters.AddWithValue("@Guid", guid);
                         _cmd.Parameters.AddWithValue("@Nombre", alumno.Nombre.ToString());
                         _cmd.Parameters.AddWithValue("@Apellidos", alumno.Apellidos.ToString());
                         _cmd.Parameters.AddWithValue("@Dni", alumno.Dni.ToString());
@@ -222,10 +218,10 @@ namespace Student.DataAccess.Dao.Repository
 
                         _cmd.ExecuteNonQuery();
                         _cmd.Parameters.Clear();
+
+                        return GetById(guid);
                     }
                 }
-
-                return alumno;
             }
             catch (SqlException ex)
             {
@@ -239,5 +235,6 @@ namespace Student.DataAccess.Dao.Repository
             }
         }
         #endregion
+        
     }
 }
