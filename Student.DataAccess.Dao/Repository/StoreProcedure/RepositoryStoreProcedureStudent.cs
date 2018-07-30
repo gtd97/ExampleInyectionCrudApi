@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Student.DataAccess.Dao.Repository
+namespace Student.DataAccess.Dao.Repository.StoreProcedure
 {
     public class RepositoryStoreProcedureStudent : IRepository
     {
@@ -26,38 +26,37 @@ namespace Student.DataAccess.Dao.Repository
         }
         #endregion
 
-        #region Add
+
+
+        #region AddAlumno
         public int AddAlumno(Alumno alumno)
         {
             try
             {
-                var sql = "INSERT INTO dbo.Alumnos (Guid, Nombre, Apellidos, Dni, Registro, Nacimiento, Edad) VALUES (@Guid, @Nombre, @Apellidos, @Dni, @Registro, @Nacimiento, @Edad)";
-
                 using (SqlConnection _conn = new SqlConnection(connectionString))
                 {
-                    using (SqlCommand _cmd = new SqlCommand(sql, _conn))
-                    {
-                        // Importante abrir la conexion antes de lanzar ningun comando
-                        _conn.Open();
+                    _conn.Open();
 
-                        _cmd.Parameters.AddWithValue("@Guid", alumno.Guid.ToString());
-                        _cmd.Parameters.AddWithValue("@Nombre", alumno.Nombre.ToString());
-                        _cmd.Parameters.AddWithValue("@Apellidos", alumno.Apellidos.ToString());
-                        _cmd.Parameters.AddWithValue("@Dni", alumno.Dni.ToString());
-                        _cmd.Parameters.AddWithValue("@Registro", alumno.Registro.ToString());
-                        _cmd.Parameters.AddWithValue("@Nacimiento", alumno.Nacimiento.ToString());
-                        _cmd.Parameters.AddWithValue("@Edad", alumno.Edad.ToString());
+                    using (SqlCommand _cmd = new SqlCommand("uspInsertStudent", _conn))
+                    {
+                        _cmd.CommandType = CommandType.StoredProcedure;
+
+                        _cmd.Parameters.AddWithValue("@StudentsGuid", alumno.Guid);
+                        _cmd.Parameters.AddWithValue("@StudentsNombre", alumno.Nombre);
+                        _cmd.Parameters.AddWithValue("@StudentsApellido", alumno.Apellidos);
+                        _cmd.Parameters.AddWithValue("@StudentsDni", alumno.Dni);
+                        _cmd.Parameters.AddWithValue("@StudentsEdad", alumno.Edad);
+                        _cmd.Parameters.AddWithValue("@StudentsNacimiento", alumno.Nacimiento);
+                        _cmd.Parameters.AddWithValue("@StudentsRegistro", alumno.Registro);
 
                         _cmd.ExecuteNonQuery();
                         _cmd.Parameters.Clear();
 
-                        _cmd.CommandText = "SELECT @@IDENTITY";
 
-                        // Obtener el ultimo identificador insertado.
-                        return Convert.ToInt32(_cmd.ExecuteScalar());
-
-                        // var id = Convert.ToInt32(_cmd.ExecuteScalar());
-                        // return SelectById(id);
+                        using (SqlCommand _cmd2 = new SqlCommand("SELECT @@IDENTITY", _conn))
+                        {
+                            return Convert.ToInt32(_cmd2.ExecuteScalar());
+                        }
                     }
                 }
             }
@@ -74,6 +73,7 @@ namespace Student.DataAccess.Dao.Repository
         }
         #endregion
 
+
         #region GetAll
         public List<Alumno> GetAll()
         {
@@ -81,23 +81,22 @@ namespace Student.DataAccess.Dao.Repository
 
             try
             {
-                var sql = "SELECT * FROM dbo.Alumnos";
-
                 using (SqlConnection _conn = new SqlConnection(connectionString))
                 {
-                    // Importante abrir la conexion antes de lanzar ningun comando
                     _conn.Open();
 
-                    using (SqlCommand _cmd = new SqlCommand(sql, _conn))
+                    using (SqlCommand _cmd = new SqlCommand("uspGetAllStudents", _conn))
                     {
+                        _cmd.CommandType = CommandType.StoredProcedure;
+
                         using (SqlDataReader reader = _cmd.ExecuteReader())
                         {
                             while (reader.Read())
                             {
                                 Alumno alumno = new Alumno(Guid.Parse(reader["guid"].ToString()),
                                                     Convert.ToInt32(reader["id"]), reader["nombre"].ToString(),
-                                                    reader["apellidos"].ToString(), reader["dni"].ToString(), 
-                                                    Convert.ToInt32(reader["edad"]), 
+                                                    reader["apellidos"].ToString(), reader["dni"].ToString(),
+                                                    Convert.ToInt32(reader["edad"]),
                                                     DateTime.Parse(reader["nacimiento"].ToString()),
                                                     DateTime.Parse(reader["registro"].ToString()));
 
@@ -122,6 +121,7 @@ namespace Student.DataAccess.Dao.Repository
         }
         #endregion
 
+
         #region GetById
         public Alumno GetById(Guid guid)
         {
@@ -129,24 +129,24 @@ namespace Student.DataAccess.Dao.Repository
 
             try
             {
-                var sql = "SELECT * FROM dbo.Alumnos WHERE Guid=@GUID";
 
                 using (SqlConnection _conn = new SqlConnection(connectionString))
                 {
-                    using (SqlCommand _cmd = new SqlCommand(sql, _conn))
+                    using (SqlCommand _cmd = new SqlCommand("uspGetByGuid", _conn))
                     {
                         // Importante abrir la conexion antes de lanzar ningun comando
                         _conn.Open();
-                        _cmd.Parameters.AddWithValue("@GUID", guid);
+                        _cmd.CommandType = CommandType.StoredProcedure;
+                        _cmd.Parameters.AddWithValue("@GuidOfStudent", guid);
 
                         using (SqlDataReader reader = _cmd.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                                alumno = new Alumno(Guid.Parse(reader["guid"].ToString()), 
-                                            Convert.ToInt32(reader["id"]), reader["nombre"].ToString(), 
-                                            reader["apellidos"].ToString(), reader["dni"].ToString(), 
-                                            Convert.ToInt32(reader["edad"]), DateTime.Parse(reader["nacimiento"].ToString()), 
+                                alumno = new Alumno(Guid.Parse(reader["guid"].ToString()),
+                                            Convert.ToInt32(reader["id"]), reader["nombre"].ToString(),
+                                            reader["apellidos"].ToString(), reader["dni"].ToString(),
+                                            Convert.ToInt32(reader["edad"]), DateTime.Parse(reader["nacimiento"].ToString()),
                                             DateTime.Parse(reader["registro"].ToString()));
                             }
                         }
@@ -168,22 +168,23 @@ namespace Student.DataAccess.Dao.Repository
         }
         #endregion
 
+
         #region Remove
         public bool Remove(Guid guid)
         {
             try
             {
-                var sql = "DELETE FROM dbo.Alumnos WHERE Guid=@GUID";
-
                 using (SqlConnection _conn = new SqlConnection(connectionString))
                 {
-                    using (SqlCommand _cmd = new SqlCommand(sql, _conn))
+                    _conn.Open();
+
+                    using (SqlCommand _cmd = new SqlCommand("uspDeleteByGuid", _conn))
                     {
-                        // Importante abrir la conexion antes de lanzar ningun comando
-                        _conn.Open();
-                        
-                        _cmd.Parameters.AddWithValue("@GUID", guid);
+                        _cmd.CommandType = CommandType.StoredProcedure;
+                        _cmd.Parameters.AddWithValue("@GuidOfStudent", guid);
+
                         _cmd.ExecuteNonQuery();
+                        _cmd.Parameters.Clear();
 
                         return true;
                     }
@@ -202,27 +203,28 @@ namespace Student.DataAccess.Dao.Repository
         }
         #endregion
 
+
         #region Update
         public Alumno Update(Guid guid, Alumno alumno)
         {
             try
             {
-                var sql = "UPDATE dbo.Alumnos SET Guid=@Guid, Nombre=@Nombre, Apellidos=@Apellidos, Dni=@Dni, Registro=@Registro, Nacimiento=@Nacimiento, Edad=@Edad WHERE Guid=@Guid";
-
                 using (SqlConnection _conn = new SqlConnection(connectionString))
                 {
-                    using (SqlCommand _cmd = new SqlCommand(sql, _conn))
-                    {
-                        // Importante abrir la conexion antes de lanzar ningun comando
-                        _conn.Open();
+                    _conn.Open();
 
-                        _cmd.Parameters.AddWithValue("@Guid", guid);
-                        _cmd.Parameters.AddWithValue("@Nombre", alumno.Nombre.ToString());
-                        _cmd.Parameters.AddWithValue("@Apellidos", alumno.Apellidos.ToString());
-                        _cmd.Parameters.AddWithValue("@Dni", alumno.Dni.ToString());
-                        _cmd.Parameters.AddWithValue("@Registro", alumno.Registro.ToString());
-                        _cmd.Parameters.AddWithValue("@Nacimiento", alumno.Nacimiento.ToString());
-                        _cmd.Parameters.AddWithValue("@Edad", alumno.Edad.ToString());
+                    using (SqlCommand _cmd = new SqlCommand("uspUpdateStudent", _conn))
+                    {
+                        _cmd.CommandType = CommandType.StoredProcedure;
+
+                        _cmd.Parameters.AddWithValue("@GuidOfStudent", guid);
+                        _cmd.Parameters.AddWithValue("@StudentsGuid", alumno.Guid);
+                        _cmd.Parameters.AddWithValue("@StudentsNombre", alumno.Nombre);
+                        _cmd.Parameters.AddWithValue("@StudentsApellido", alumno.Apellidos);
+                        _cmd.Parameters.AddWithValue("@StudentsDni", alumno.Dni);
+                        _cmd.Parameters.AddWithValue("@StudentsEdad", alumno.Edad);
+                        _cmd.Parameters.AddWithValue("@StudentsNacimiento", alumno.Nacimiento);
+                        _cmd.Parameters.AddWithValue("@StudentsRegistro", alumno.Registro);
 
                         _cmd.ExecuteNonQuery();
                         _cmd.Parameters.Clear();
@@ -243,6 +245,6 @@ namespace Student.DataAccess.Dao.Repository
             }
         }
         #endregion
-        
+
     }
 }

@@ -10,8 +10,6 @@ namespace Student.Common.Logic.Log4Net
 {
     public class Log4netAdapter : ILogger
     {
-        // ILogger interfaz creada por mi
-
         // ILog es de lo4net
         private readonly ILog log;
 

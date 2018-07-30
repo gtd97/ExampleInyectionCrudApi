@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Student.Business.Logi.BusinessLogic
+namespace Student.DataAccess.Dao.Contracts
 {
-    public interface IBusiness
+    public interface IRepositoryStoreProcedures
     {
         int AddAlumno(Alumno alumno);
         List<Alumno> GetAll();
         Alumno GetById(Guid guid);
-        bool Remove(Guid guid);
+        int Remove(Guid guid);
         Alumno Update(Guid guid, Alumno alumno);
     }
 }

@@ -3,7 +3,7 @@ using Student.Common.Logic.Log4Net;
 //using Student.DataAccess.Dao;
 using Student.DataAccess.Dao.Contracts;
 using Student.DataAccess.Dao.Modules;
-using Student.DataAccess.Dao.Repository;
+using Student.DataAccess.Dao.Repository.StoreProcedure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +17,16 @@ namespace Student.Business.Logi.Modules
         protected override void Load(ContainerBuilder builder)
         {
             builder
-                //.RegisterType<StudentDao>()
+                .RegisterType<RepositoryStoreProcedureStudent>()
+                .As<IRepository>()
+                .InstancePerRequest();
+
+            /*
+            builder
                 .RegisterType<RepositoryStudent>()
                 .As<IRepository>()
                 .InstancePerRequest();
+            */
 
             builder
                 .RegisterType<Log4netAdapter>()

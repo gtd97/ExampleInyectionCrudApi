@@ -80,7 +80,7 @@ namespace Student.Business.Logi.BusinessLogic
             }
         }
 
-        public int Remove(Guid guid)
+        public bool Remove(Guid guid)
         {
             try
             {
